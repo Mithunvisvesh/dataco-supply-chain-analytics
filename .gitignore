@@ -1,0 +1,12 @@
+# Local Python and OS noise
+__pycache__/
+*.py[cod]
+.DS_Store
+**/.DS_Store
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Accidental empty legacy path (raw lives in dataset/)
+data/
