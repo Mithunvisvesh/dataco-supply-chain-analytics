@@ -10,3 +10,6 @@ env/
 
 # Accidental empty legacy path (raw lives in dataset/)
 data/
+
+# Local editor rules (not for GitHub)
+.cursor/
