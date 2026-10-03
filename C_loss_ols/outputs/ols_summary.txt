@@ -1,0 +1,247 @@
+OLS on Benefit per order - Phase 3a (C)
+Train n = 144415, test n = 36104, split = 80/20 stratified on loss, random_state = 42
+Reference levels (dropped dummies): {'Shipping Mode': 'Standard Class', 'Market': 'LATAM', 'Customer Segment': 'Consumer', 'Type': 'DEBIT', 'Category': 'Cleats'}
+
+Features used (27):
+  Order Item Product Price
+  Order Item Quantity
+  Order Item Discount Rate
+  order_month
+  order_weekday
+  Shipping Mode_First Class
+  Shipping Mode_Same Day
+  Shipping Mode_Second Class
+  Market_Africa
+  Market_Europe
+  Market_Pacific Asia
+  Market_USCA
+  Customer Segment_Corporate
+  Customer Segment_Home Office
+  Type_CASH
+  Type_PAYMENT
+  Type_TRANSFER
+  Category Name_grouped_Camping & Hiking
+  Category Name_grouped_Cardio Equipment
+  Category Name_grouped_Electronics
+  Category Name_grouped_Fishing
+  Category Name_grouped_Indoor/Outdoor Games
+  Category Name_grouped_Men's Footwear
+  Category Name_grouped_Other
+  Category Name_grouped_Shop By Sport
+  Category Name_grouped_Water Sports
+  Category Name_grouped_Women's Apparel
+
+Excluded and why:
+  - Benefit per order, Benefit_signed_log, loss: target itself / transform of the target
+  - Order Profit Per Order, Order Item Profit Ratio: already dropped by A (define profit)
+  - Late_delivery_risk, late: known only after delivery; not an order-time feature
+  - Order Status: post-order state (A flagged it as unresolved)
+  - Sales, Order Item Total, Order Item Discount: Sales = price x quantity, discount = rate x sales, Order Item Total = Sales - discount; r(Sales, Total)=0.99
+  - Days for shipment (scheduled): one-to-one with Shipping Mode (perfect collinearity)
+  - Order Region, Department Name: nested in Market / Category (VIF and interpretability)
+  - Text columns (Product Name, cities, zipcode, ...): not encoded, high cardinality
+
+==============================================================================
+MODEL 1: raw Benefit per order (classical SE)
+==============================================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.016
+Model:                            OLS   Adj. R-squared:                  0.016
+Method:                 Least Squares   F-statistic:                     89.68
+Date:                Sat, 03 Oct 2026   Prob (F-statistic):               0.00
+Time:                        15:59:22   Log-Likelihood:            -8.7524e+05
+No. Observations:              144415   AIC:                         1.751e+06
+Df Residuals:                  144387   BIC:                         1.751e+06
+Df Model:                          27                                         
+Covariance Type:            nonrobust                                         
+==============================================================================================================
+                                                 coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------------------------
+const                                         -0.7127      1.426     -0.500      0.617      -3.508       2.082
+Order Item Product Price                       0.1026      0.003     31.223      0.000       0.096       0.109
+Order Item Quantity                            5.7235      0.248     23.105      0.000       5.238       6.209
+Order Item Discount Rate                     -25.1567      3.875     -6.492      0.000     -32.752     -17.562
+order_month                                    0.2067      0.101      2.047      0.041       0.009       0.405
+order_weekday                                 -0.0379      0.136     -0.278      0.781      -0.305       0.229
+Shipping Mode_First Class                      1.1511      0.780      1.475      0.140      -0.379       2.681
+Shipping Mode_Same Day                        -0.5571      1.224     -0.455      0.649      -2.957       1.843
+Shipping Mode_Second Class                    -0.2285      0.712     -0.321      0.748      -1.624       1.167
+Market_Africa                                 -0.8744      1.340     -0.653      0.514      -3.500       1.751
+Market_Europe                                 -1.0285      0.873     -1.178      0.239      -2.739       0.682
+Market_Pacific Asia                           -1.4796      0.852     -1.737      0.082      -3.149       0.190
+Market_USCA                                   -0.2070      0.927     -0.223      0.823      -2.023       1.609
+Customer Segment_Corporate                    -0.1670      0.623     -0.268      0.789      -1.388       1.054
+Customer Segment_Home Office                  -0.4180      0.751     -0.557      0.578      -1.889       1.053
+Type_CASH                                      0.8118      0.938      0.865      0.387      -1.028       2.651
+Type_PAYMENT                                  -1.3359      0.719     -1.857      0.063      -2.746       0.074
+Type_TRANSFER                                 -0.9424      0.681     -1.385      0.166      -2.276       0.391
+Category Name_grouped_Camping & Hiking        -2.2721      1.512     -1.503      0.133      -5.235       0.691
+Category Name_grouped_Cardio Equipment         6.6998      1.282      5.225      0.000       4.187       9.213
+Category Name_grouped_Electronics             -5.3215      2.209     -2.409      0.016      -9.651      -0.992
+Category Name_grouped_Fishing                 -0.7171      1.629     -0.440      0.660      -3.910       2.476
+Category Name_grouped_Indoor/Outdoor Games    -2.3031      1.116     -2.063      0.039      -4.491      -0.115
+Category Name_grouped_Men's Footwear          -1.8025      1.190     -1.515      0.130      -4.135       0.530
+Category Name_grouped_Other                   -2.9512      1.165     -2.534      0.011      -5.234      -0.668
+Category Name_grouped_Shop By Sport           -6.2757      1.335     -4.700      0.000      -8.893      -3.659
+Category Name_grouped_Water Sports            -2.1667      1.345     -1.611      0.107      -4.802       0.469
+Category Name_grouped_Women's Apparel         -2.2596      1.091     -2.070      0.038      -4.399      -0.121
+==============================================================================
+Omnibus:                   165643.726   Durbin-Watson:                   1.994
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):         47114659.763
+Skew:                          -5.630   Prob(JB):                         0.00
+Kurtosis:                      90.767   Cond. No.                     2.84e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 2.84e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+95% CI table (classical):
+                                                coef    ci_low   ci_high  std_err  p_value
+const                                       -0.71269  -3.50750   2.08211  1.42594  0.61721
+Order Item Product Price                     0.10258   0.09614   0.10902  0.00329  0.00000
+Order Item Quantity                          5.72353   5.23800   6.20906  0.24772  0.00000
+Order Item Discount Rate                   -25.15670 -32.75181 -17.56159  3.87509  0.00000
+order_month                                  0.20669   0.00878   0.40461  0.10098  0.04067
+order_weekday                               -0.03791  -0.30527   0.22944  0.13641  0.78106
+Shipping Mode_First Class                    1.15109  -0.37852   2.68070  0.78042  0.14023
+Shipping Mode_Same Day                      -0.55714  -2.95713   1.84285  1.22450  0.64911
+Shipping Mode_Second Class                  -0.22850  -1.62369   1.16668  0.71184  0.74821
+Market_Africa                               -0.87444  -3.49996   1.75109  1.33957  0.51390
+Market_Europe                               -1.02851  -2.73946   0.68243  0.87294  0.23871
+Market_Pacific Asia                         -1.47958  -3.14893   0.18977  0.85172  0.08236
+Market_USCA                                 -0.20697  -2.02330   1.60936  0.92671  0.82327
+Customer Segment_Corporate                  -0.16700  -1.38816   1.05415  0.62305  0.78867
+Customer Segment_Home Office                -0.41801  -1.88913   1.05312  0.75058  0.57759
+Type_CASH                                    0.81183  -1.02757   2.65123  0.93848  0.38701
+Type_PAYMENT                                -1.33594  -2.74586   0.07399  0.71936  0.06330
+Type_TRANSFER                               -0.94236  -2.27615   0.39142  0.68051  0.16612
+Category Name_grouped_Camping & Hiking      -2.27207  -5.23498   0.69084  1.51171  0.13285
+Category Name_grouped_Cardio Equipment       6.69983   4.18651   9.21315  1.28232  0.00000
+Category Name_grouped_Electronics           -5.32147  -9.65086  -0.99209  2.20889  0.01599
+Category Name_grouped_Fishing               -0.71709  -3.91047   2.47629  1.62929  0.65985
+Category Name_grouped_Indoor/Outdoor Games  -2.30312  -4.49100  -0.11524  1.11628  0.03909
+Category Name_grouped_Men's Footwear        -1.80249  -4.13491   0.52993  1.19002  0.12986
+Category Name_grouped_Other                 -2.95120  -5.23396  -0.66844  1.16469  0.01128
+Category Name_grouped_Shop By Sport         -6.27568  -8.89261  -3.65875  1.33518  0.00000
+Category Name_grouped_Water Sports          -2.16670  -4.80223   0.46883  1.34467  0.10711
+Category Name_grouped_Women's Apparel       -2.25965  -4.39871  -0.12059  1.09137  0.03841
+
+==============================================================================
+MODEL 1b: raw, HC3 robust standard errors
+==============================================================================
+                                                coef    ci_low   ci_high  std_err  p_value
+const                                       -0.71269  -4.20971   2.78432  1.78422  0.68957
+Order Item Product Price                     0.10258   0.06555   0.13960  0.01889  0.00000
+Order Item Quantity                          5.72353   5.23412   6.21295  0.24971  0.00000
+Order Item Discount Rate                   -25.15670 -32.48613 -17.82728  3.73957  0.00000
+order_month                                  0.20669   0.01255   0.40084  0.09905  0.03691
+order_weekday                               -0.03791  -0.30578   0.22995  0.13667  0.78147
+Shipping Mode_First Class                    1.15109  -0.32444   2.62661  0.75283  0.12626
+Shipping Mode_Same Day                      -0.55714  -2.83196   1.71768  1.16064  0.63121
+Shipping Mode_Second Class                  -0.22850  -1.67311   1.21611  0.73706  0.75655
+Market_Africa                               -0.87444  -3.38026   1.63139  1.27851  0.49401
+Market_Europe                               -1.02851  -2.67330   0.61628  0.83919  0.22035
+Market_Pacific Asia                         -1.47958  -3.07592   0.11676  0.81448  0.06928
+Market_USCA                                 -0.20697  -1.89640   1.48246  0.86197  0.81024
+Customer Segment_Corporate                  -0.16700  -1.37248   1.03847  0.61505  0.78599
+Customer Segment_Home Office                -0.41801  -1.91477   1.07876  0.76367  0.58413
+Type_CASH                                    0.81183  -0.98648   2.61015  0.91752  0.37626
+Type_PAYMENT                                -1.33594  -2.74723   0.07536  0.72006  0.06355
+Type_TRANSFER                               -0.94236  -2.28409   0.39936  0.68457  0.16864
+Category Name_grouped_Camping & Hiking      -2.27207 -11.05204   6.50791  4.47966  0.61202
+Category Name_grouped_Cardio Equipment       6.69983   3.36882  10.03084  1.69953  0.00008
+Category Name_grouped_Electronics           -5.32147  -7.93241  -2.71053  1.33214  0.00006
+Category Name_grouped_Fishing               -0.71709 -13.16925  11.73508  6.35326  0.91013
+Category Name_grouped_Indoor/Outdoor Games  -2.30312  -3.94007  -0.66617  0.83520  0.00582
+Category Name_grouped_Men's Footwear        -1.80249  -4.32333   0.71835  1.28617  0.16108
+Category Name_grouped_Other                 -2.95120  -5.15157  -0.75082  1.12266  0.00857
+Category Name_grouped_Shop By Sport         -6.27568  -8.08539  -4.46596  0.92334  0.00000
+Category Name_grouped_Water Sports          -2.16670  -7.22330   2.88990  2.57995  0.40101
+Category Name_grouped_Women's Apparel       -2.25965  -3.87439  -0.64491  0.82386  0.00609
+
+==============================================================================
+MODEL 2: signed-log response
+==============================================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.015
+Model:                            OLS   Adj. R-squared:                  0.014
+Method:                 Least Squares   F-statistic:                     79.17
+Date:                Sat, 03 Oct 2026   Prob (F-statistic):               0.00
+Time:                        15:59:22   Log-Likelihood:            -3.6930e+05
+No. Observations:              144415   AIC:                         7.387e+05
+Df Residuals:                  144387   BIC:                         7.389e+05
+Df Model:                          27                                         
+Covariance Type:            nonrobust                                         
+==============================================================================================================
+                                                 coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------------------------------
+const                                          1.4708      0.043     34.272      0.000       1.387       1.555
+Order Item Product Price                       0.0022   9.89e-05     22.743      0.000       0.002       0.002
+Order Item Quantity                            0.2158      0.007     28.950      0.000       0.201       0.230
+Order Item Discount Rate                      -0.7100      0.117     -6.087      0.000      -0.939      -0.481
+order_month                                    0.0053      0.003      1.754      0.079      -0.001       0.011
+order_weekday                                 -0.0051      0.004     -1.235      0.217      -0.013       0.003
+Shipping Mode_First Class                      0.0274      0.023      1.165      0.244      -0.019       0.073
+Shipping Mode_Same Day                        -0.0037      0.037     -0.101      0.919      -0.076       0.068
+Shipping Mode_Second Class                     0.0240      0.021      1.119      0.263      -0.018       0.066
+Market_Africa                                 -0.0334      0.040     -0.828      0.408      -0.112       0.046
+Market_Europe                                 -0.0274      0.026     -1.042      0.297      -0.079       0.024
+Market_Pacific Asia                           -0.0444      0.026     -1.732      0.083      -0.095       0.006
+Market_USCA                                   -0.0225      0.028     -0.807      0.420      -0.077       0.032
+Customer Segment_Corporate                    -0.0207      0.019     -1.102      0.270      -0.057       0.016
+Customer Segment_Home Office                  -0.0098      0.023     -0.435      0.664      -0.054       0.034
+Type_CASH                                      0.0353      0.028      1.248      0.212      -0.020       0.091
+Type_PAYMENT                                  -0.0123      0.022     -0.569      0.570      -0.055       0.030
+Type_TRANSFER                                 -0.0142      0.020     -0.694      0.488      -0.054       0.026
+Category Name_grouped_Camping & Hiking         0.2200      0.045      4.836      0.000       0.131       0.309
+Category Name_grouped_Cardio Equipment         0.1653      0.039      4.283      0.000       0.090       0.241
+Category Name_grouped_Electronics             -0.2366      0.066     -3.559      0.000      -0.367      -0.106
+Category Name_grouped_Fishing                  0.2098      0.049      4.279      0.000       0.114       0.306
+Category Name_grouped_Indoor/Outdoor Games    -0.0987      0.034     -2.939      0.003      -0.165      -0.033
+Category Name_grouped_Men's Footwear           0.1398      0.036      3.902      0.000       0.070       0.210
+Category Name_grouped_Other                   -0.1878      0.035     -5.358      0.000      -0.257      -0.119
+Category Name_grouped_Shop By Sport           -0.3061      0.040     -7.618      0.000      -0.385      -0.227
+Category Name_grouped_Water Sports             0.2127      0.040      5.255      0.000       0.133       0.292
+Category Name_grouped_Women's Apparel         -0.0948      0.033     -2.885      0.004      -0.159      -0.030
+==============================================================================
+Omnibus:                    34985.628   Durbin-Watson:                   1.994
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            66413.320
+Skew:                          -1.579   Prob(JB):                         0.00
+Kurtosis:                       4.030   Cond. No.                     2.84e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 2.84e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+==============================================================================
+Hold-out comparison
+==============================================================================
+                  model                                response_scale  R2_train  adj_R2_train  R2_test  RMSE_test_dollars
+ OLS raw (classical SE)                                       dollars   0.01649       0.01631  0.02005          102.79483
+OLS raw (HC3 robust SE)                                       dollars   0.01649       0.01631  0.02005          102.79483
+OLS signed-log response signed log (RMSE back-transformed to dollars)   0.01459       0.01440  0.01627          104.20170
+     Mean-only baseline                                       dollars   0.00000       0.00000 -0.00004          103.84320
+
+Assumption tests:
+     model  resid_skew  resid_excess_kurtosis  jarque_bera_p  breusch_pagan_p  durbin_watson  max_VIF
+       raw    -5.62977               87.76731            0.0              0.0        1.99394  3.09059
+signed_log    -1.57927                1.02991            0.0              0.0        1.99371  3.09059
+
+VIF (top 10):
+                               feature   VIF
+         Category Name_grouped_Fishing 3.091
+              Order Item Product Price 2.828
+Category Name_grouped_Camping & Hiking 2.147
+  Category Name_grouped_Men's Footwear 2.062
+                         Market_Europe 2.054
+    Category Name_grouped_Water Sports 1.905
+           Category Name_grouped_Other 1.821
+                   Order Item Quantity 1.741
+                   Market_Pacific Asia 1.713
+ Category Name_grouped_Women's Apparel 1.644

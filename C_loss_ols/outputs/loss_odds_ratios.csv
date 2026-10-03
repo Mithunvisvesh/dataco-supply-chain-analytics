@@ -1,0 +1,28 @@
+,odds_ratio,ci_low,ci_high,p_value
+Category Name_grouped_Shop By Sport,1.08025,1.01345,1.15144,0.01778
+Category Name_grouped_Electronics,0.96627,0.86707,1.07683,0.53479
+Market_Pacific Asia,1.02952,0.98799,1.0728,0.16614
+Shipping Mode_First Class,0.97144,0.93525,1.00904,0.13475
+Shipping Mode_Second Class,0.97222,0.93915,1.00646,0.11064
+Category Name_grouped_Other,0.97515,0.9213,1.03215,0.38531
+Category Name_grouped_Camping & Hiking,1.02301,0.95064,1.10088,0.54339
+Category Name_grouped_Water Sports,1.0217,0.95725,1.09049,0.51842
+Type_CASH,0.97877,0.93503,1.02456,0.35764
+Market_Europe,1.02018,0.97794,1.06425,0.35438
+Category Name_grouped_Cardio Equipment,1.01721,0.95597,1.08238,0.59013
+Customer Segment_Corporate,1.01606,0.98588,1.04716,0.3004
+Market_USCA,1.01546,0.97087,1.0621,0.50316
+Category Name_grouped_Fishing,1.00987,0.93282,1.09328,0.8084
+Type_TRANSFER,1.00777,0.97512,1.04151,0.64499
+order_weekday,1.00752,0.99428,1.02094,0.26692
+Market_Africa,1.00698,0.94358,1.07463,0.83402
+Customer Segment_Home Office,1.00653,0.97057,1.04382,0.72578
+Category Name_grouped_Men's Footwear,1.00637,0.94989,1.06621,0.82939
+Category Name_grouped_Indoor/Outdoor Games,1.00591,0.95286,1.06191,0.83131
+order_month,0.99429,0.97792,1.01094,0.49925
+Order Item Discount Rate,1.00524,0.99204,1.01862,0.43824
+Shipping Mode_Same Day,0.99544,0.93821,1.05617,0.87985
+Type_PAYMENT,1.00325,0.9689,1.03882,0.85508
+Order Item Quantity,0.99882,0.98153,1.01641,0.89423
+Order Item Product Price,0.99923,0.97703,1.02193,0.94639
+Category Name_grouped_Women's Apparel,1.00063,0.94895,1.05511,0.98153

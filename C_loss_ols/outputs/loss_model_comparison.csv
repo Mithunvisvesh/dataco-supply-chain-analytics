@@ -1,0 +1,8 @@
+model,threshold,split,accuracy,precision,recall,F1,ROC_AUC,PR_AUC,TN,FP,FN,TP
+Always predict profit (dummy),,test,0.81285,0.0,0.0,0.0,0.5,0.18715,29347,0,6757,0
+LR baseline (no imbalance handling),0.5,test,0.81285,0.0,0.0,0.0,0.50344,0.18886,29347,0,6757,0
+LR class_weight=balanced,0.5,test,0.51116,0.18809,0.48601,0.27121,0.50332,0.18875,15171,14176,3473,3284
+LR random oversampling,0.5,test,0.50332,0.18943,0.50437,0.27542,0.50504,0.18965,14764,14583,3349,3408
+LR SMOTE,0.5,test,0.49416,0.18933,0.51887,0.27743,0.50393,0.18852,14335,15012,3251,3506
+LR class_weight=balanced @ train-CV F1-max threshold,0.4652,test,0.18715,0.18715,1.0,0.3153,0.50332,0.18875,0,29347,0,6757
+LR class_weight=balanced @ train-CV recall>=0.5 threshold,0.4996,test,0.49787,0.1882,0.50792,0.27464,0.50332,0.18875,14543,14804,3325,3432
