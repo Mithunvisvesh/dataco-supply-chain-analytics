@@ -1,6 +1,6 @@
 # DataCo Supply Chain Analytics
 
-Foundations of Data Science (23CSE351) · Group 3
+Foundations of Data Science (23CSE351) · Group 4
 
 Shared repository for the DataCo Smart Supply Chain project. We study what drives late deliveries and loss-making orders, test those drivers statistically, fit OLS and classification models taught in the course, and present results in Power BI.
 
@@ -18,7 +18,7 @@ Shared repository for the DataCo Smart Supply Chain project. We study what drive
 | Loss target | `loss = 1` if `Benefit per order` < 0, else 0 (zero profit = not loss) |
 | Profit target (OLS) | `Benefit per order` (continuous) |
 | Split and seed | 80/20 stratified for classifiers, `random_state = 42` |
-| Cleaned file | `A_preprocessing_eda/outputs/cleaned_supply_chain.csv` — produced by A; nobody else edits it |
+| Cleaned file | `A_preprocessing_eda/outputs/cleaned_supply_chain.csv` — produced by Oscar; nobody else edits it |
 
 ## Repository layout
 
@@ -36,9 +36,16 @@ A_preprocessing_eda/
     handoff_phase1.md                   # short group-chat hand-off
     PHASE1_REPORT.md                    # teammate-facing Phase 1 report
     outlier_plots/
-B_hypothesis_powerbi/                   # (B) tests + Power BI — to add
-C_ols_loss/                             # (C) OLS + loss classification — to add
-D_late_model_report/                    # (D) late model + report/slides — to add
+B_hypothesis_powerbi/
+  phase2b_tests.py                      # T1–T6 hypothesis tests
+  dashboard_spec.md                     # Power BI page layout
+  outputs/
+    tests_results.csv
+    PHASE2B_REPORT.md
+    handoff_phase2b.md
+    plots/
+C_ols_loss/                             # (Hisana) OLS + loss classification — to add
+D_late_model_report/                    # (Preetham) late model + report/slides — to add
 README.md
 ```
 
@@ -46,13 +53,14 @@ README.md
 
 | Owner | Block | Status |
 | --- | --- | --- |
-| A | Phase 1 — cleaning and preprocessing | Done |
-| A | Phase 2a — EDA | Not started |
-| B | Phase 2b — hypothesis tests + Power BI | Waiting on cleaned file |
-| C | Phase 3a — OLS + loss classification | Waiting on cleaned file |
-| D | Phase 3b — late-delivery model | Waiting on cleaned file |
+| Oscar | Phase 1 — cleaning and preprocessing | Done |
+| Oscar | Phase 2a — EDA | Not started |
+| Mithun | Phase 2b — hypothesis tests | Done |
+| Mithun | Phase 4 — Power BI dashboard | Pages 1–3 not started; page 4 waits on Hisana and Preetham |
+| Hisana | Phase 3a — OLS + loss classification | Cleaned file ready |
+| Preetham | Phase 3b — late-delivery model | Cleaned file ready |
 
-## Phase 1 (Person A) — start here
+## Phase 1 (Oscar) — start here
 
 **Use this file:** `A_preprocessing_eda/outputs/cleaned_supply_chain.csv`
 
@@ -76,7 +84,7 @@ Short hand-off: [`A_preprocessing_eda/outputs/handoff_phase1.md`](A_preprocessin
 
 ### Rules every teammate must follow
 
-- Do not edit the cleaned CSV. Request changes through A.
+- Do not edit the cleaned CSV. Request changes through Oscar.
 - Do not use leakage columns: `Delivery Status`, `Days for shipping (real)`, `shipping date (DateOrders)`, `Order Profit Per Order`, `Order Item Profit Ratio`.
 - `Benefit per order` is the OLS target only — never a feature for loss or OLS.
 - `late`, `loss`, and `Late_delivery_risk` are targets, not features.
@@ -96,18 +104,27 @@ Or open and run `A_preprocessing_eda/phase1_cleaning.ipynb` (from the repo root 
 
 Raw path default: `dataset/DataCoSupplyChainDataset.csv` (`encoding="latin-1"`).
 
+## Phase 2b (Mithun) — hypothesis tests
+
+```bash
+python -m pip install -r B_hypothesis_powerbi/requirements.txt
+python B_hypothesis_powerbi/phase2b_tests.py
+```
+
+Results: [`B_hypothesis_powerbi/outputs/PHASE2B_REPORT.md`](B_hypothesis_powerbi/outputs/PHASE2B_REPORT.md) · [`tests_results.csv`](B_hypothesis_powerbi/outputs/tests_results.csv) · [`handoff_phase2b.md`](B_hypothesis_powerbi/outputs/handoff_phase2b.md)
+
 ## Contributors
 
-Group 3 · Foundations of Data Science (23CSE351).
+Group 4 · Foundations of Data Science (23CSE351).
 
 ## Roles
 
 | Member | Owns |
 | --- | --- |
-| A | Preprocessing, cleaning log, EDA |
-| B (Mithun) | Hypothesis tests, Power BI dashboard |
-| C | OLS on profit, loss classification |
-| D (Preetham) | Late-delivery model, report, slides |
+| Oscar | Preprocessing, cleaning log, EDA |
+| Mithun | Hypothesis tests, Power BI dashboard |
+| Hisana | OLS on profit, loss classification |
+| Preetham | Late-delivery model, report, slides |
 
 ## Note on large files
 
