@@ -1,7 +1,7 @@
 pandas==2.3.3
 numpy==2.3.5
 matplotlib==3.10.6
-scipy
-statsmodels
-scikit-learn
-imbalanced-learn
+scipy==1.16.2
+statsmodels==0.15.0
+scikit-learn==1.7.2
+imbalanced-learn==0.14.0

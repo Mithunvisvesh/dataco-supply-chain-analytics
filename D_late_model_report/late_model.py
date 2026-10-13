@@ -175,9 +175,9 @@ if target_values != [0, 1]:
         f"Unexpected target values in {TARGET}: {target_values}"
     )
 
-# Confirm the duplicate target matches the official target.
-# 'late' is not read above deliberately, because it must not be a feature.
-# The official target is Late_delivery_risk.
+# Phase 1's independent validator establishes that `late` equals
+# `Late_delivery_risk` for the shared cleaned file. This model deliberately
+# reads only the official target, so the duplicate target cannot become a feature.
 
 # Confirm the scheduled-days / shipping-mode relationship.
 schedule_map = (

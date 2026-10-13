@@ -62,7 +62,16 @@ C_loss_ols/
     ols_predictions_test.csv
     signal_check.txt
     ols_plots/
-D_late_model_report/                    # (Preetham) late model + report/slides — to add
+D_late_model_report/                    # Phase 3b late-delivery model and saved outputs
+  late_model.py                         # Phase 3b: leakage-controlled late-delivery model
+  requirements.txt                      # pinned direct dependencies for Phase 3b
+  handoff_phase3b.md                    # results and model-use hand-off
+  outputs/
+    late_model_results.csv
+    late_predictions.csv
+    late_odds_ratios.csv
+    late_model_summary.txt
+    plots/
 README.md
 ```
 
@@ -73,9 +82,9 @@ README.md
 | Oscar | Phase 1 — cleaning and preprocessing | Done |
 | Oscar | Phase 2a — EDA | Done |
 | Mithun | Phase 2b — hypothesis tests | Done |
-| Mithun | Phase 4 — Power BI dashboard | Pages 1–3 not started; page 4 waits on Hisana and Preetham |
+| Mithun | Phase 4 — Power BI dashboard | Not included in this repository; dashboard pages remain outstanding |
 | Hisana | Phase 3a — OLS + loss classification | Done |
-| Preetham | Phase 3b — late-delivery model | Cleaned file ready |
+| Preetham | Phase 3b — late-delivery model | Done; model outputs and hand-off are included |
 
 ## Phase 1 (Oscar) — start here
 
@@ -171,6 +180,37 @@ Interpretation (not tested, because the dataset has no cost columns): the missin
 
 Full write-up: [`C_loss_ols/outputs/PHASE3A_REPORT.md`](C_loss_ols/outputs/PHASE3A_REPORT.md) · Hand-off: [`C_loss_ols/outputs/handoff_phase3a.md`](C_loss_ols/outputs/handoff_phase3a.md)
 
+## Phase 3b (Preetham) — late-delivery model
+
+Run these commands from the **repository root**. The script reads
+`A_preprocessing_eda/outputs/cleaned_supply_chain.csv` and overwrites only
+files under `D_late_model_report/outputs/`.
+
+```bash
+python -m pip install -r D_late_model_report/requirements.txt
+python D_late_model_report/late_model.py
+```
+
+Saved outputs: [`late_model_results.csv`](D_late_model_report/outputs/late_model_results.csv),
+[`late_predictions.csv`](D_late_model_report/outputs/late_predictions.csv),
+[`late_odds_ratios.csv`](D_late_model_report/outputs/late_odds_ratios.csv),
+[`late_model_summary.txt`](D_late_model_report/outputs/late_model_summary.txt), and the
+confusion-matrix and ROC plots. The implementation and saved outputs are complete; a separate
+Phase 3b narrative report and presentation slides are not included in this repository.
+
+The held-out test results are 69.68% accuracy and ROC-AUC 0.7409. These are predictive
+associations, not causal effects; shipping mode is the strongest feature after removing
+delivery-time leakage.
+
+## Reproducible environment
+
+Each analytical phase has its own pinned `requirements.txt`. The requirements were checked on
+Windows with Python 3.13.2. Phase 3a requires `imbalanced-learn` for its oversampling and SMOTE
+comparisons; version 0.14.0 is pinned because it supports scikit-learn 1.7. Phase 1 and Phase 2
+requirements retain their existing NumPy 2.3.5 pin; the audit environment used NumPy 2.3.3 for
+read-only validation, so a full regeneration should use the pinned phase requirements rather than
+mixing packages from an existing environment.
+
 ## Contributors
 
 Group 4 · Foundations of Data Science (23CSE351).
@@ -187,6 +227,10 @@ Group 4 · Foundations of Data Science (23CSE351).
 ## Note on large files
 
 `dataset/DataCoSupplyChainDataset.csv` (~91 MB) and `cleaned_supply_chain.csv` (~94 MB) are under GitHub’s 100 MB hard limit. GitHub may warn above 50 MB. If clone/push becomes awkward, switch those two files to Git LFS.
+
+Git LFS is installed locally but these CSVs are currently ordinary tracked Git blobs, not LFS
+objects. Migrating existing history would rewrite shared history, so this repository intentionally
+leaves them unchanged. Agree on a coordinated migration before making that change.
 
 ## License / data
 
