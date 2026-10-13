@@ -37,13 +37,15 @@ Excluded features and why:
 
 ## 3. OLS on Benefit per order
 
-| Model | R² train | R² test | RMSE test ($) |
+| Model | R² train (target scale) | R² test (target scale) | RMSE test (dollars) |
 | --- | --- | --- | --- |
 | OLS raw (classical or HC3 SE; same coefficients) | 0.0165 | 0.0200 | 102.79 |
-| OLS signed-log response | 0.0146 | 0.0163 | 104.20 (back-transformed) |
+| OLS signed-log response | 0.0146 (signed-log) | 0.0163 (signed-log) | 104.20 (back-transformed) |
 | Mean-only baseline | 0 | -0.0000 | 103.84 |
 
 The model beats the mean-only baseline by about $1 of RMSE. Adjusted R² (train) is 0.0163.
+
+The signed-log model's R² values are calculated on the signed-log response, while its RMSE is calculated after predictions are transformed back to dollars. They are therefore not directly comparable with the raw-dollar R² values. On the shared dollar-scale comparison, the raw OLS model has the lower test RMSE (102.79 vs 104.20), so the signed-log refit improves residual shape but not dollar-scale predictive performance.
 
 Assumption checks (full output in `ols_summary.txt`, `ols_assumption_tests.csv`, `ols_plots/`):
 
