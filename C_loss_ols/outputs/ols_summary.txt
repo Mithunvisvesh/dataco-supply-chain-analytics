@@ -49,8 +49,8 @@ MODEL 1: raw Benefit per order (classical SE)
 Dep. Variable:                      y   R-squared:                       0.016
 Model:                            OLS   Adj. R-squared:                  0.016
 Method:                 Least Squares   F-statistic:                     89.68
-Date:                Sat, 03 Oct 2026   Prob (F-statistic):               0.00
-Time:                        15:59:22   Log-Likelihood:            -8.7524e+05
+Date:                Sat, 17 Oct 2026   Prob (F-statistic):               0.00
+Time:                        09:08:55   Log-Likelihood:            -8.7524e+05
 No. Observations:              144415   AIC:                         1.751e+06
 Df Residuals:                  144387   BIC:                         1.751e+06
 Df Model:                          27                                         
@@ -170,8 +170,8 @@ MODEL 2: signed-log response
 Dep. Variable:                      y   R-squared:                       0.015
 Model:                            OLS   Adj. R-squared:                  0.014
 Method:                 Least Squares   F-statistic:                     79.17
-Date:                Sat, 03 Oct 2026   Prob (F-statistic):               0.00
-Time:                        15:59:22   Log-Likelihood:            -3.6930e+05
+Date:                Sat, 17 Oct 2026   Prob (F-statistic):               0.00
+Time:                        09:08:55   Log-Likelihood:            -3.6930e+05
 No. Observations:              144415   AIC:                         7.387e+05
 Df Residuals:                  144387   BIC:                         7.389e+05
 Df Model:                          27                                         

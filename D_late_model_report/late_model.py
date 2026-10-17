@@ -23,7 +23,12 @@ Project rules:
     - No delivery/profit leakage
 """
 
+import sys
 from pathlib import Path
+
+# Ensure Unicode characters (✓, —) print correctly on Windows cp1252 terminals.
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 
 import numpy as np
 import pandas as pd

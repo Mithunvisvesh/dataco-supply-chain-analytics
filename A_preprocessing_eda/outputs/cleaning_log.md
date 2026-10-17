@@ -1,11 +1,11 @@
 # Phase 1 cleaning log: DataCo Smart Supply Chain
 
-- Run date: 2026-10-03
+- Run date: 2026-10-17
 - Script: `A_preprocessing_eda/phase1_cleaning.py`
 - Raw file: `dataset/DataCoSupplyChainDataset.csv`
-- Python: 3.13.9
+- Python: 3.13.2
 - pandas: 2.3.3
-- numpy: 2.3.5
+- numpy: 2.3.3
 
 ## Summary
 
@@ -15,7 +15,7 @@ Columns added: 4 derived date, 2 transform, 3 grouped text, 83 one-hot, 2 target
 Null cells fell from 336,209 to 0.
 Late orders (`late` = 1): 54.8291% (98,977 of 180,519). Loss orders (`loss` = 1): 18.7149% (33,784 of 180,519).
 Exactly zero profit: 0.6520% (1,177 rows). All of them have `loss` = 0.
-The cleaned file is unscaled, has no train/test split, and is 93.65 MB (98,202,486 bytes). This is above 50 MB. GitHub warns at 50 MB and blocks at 100 MB. Git LFS may be needed. The file was not shrunk.
+The cleaned file is unscaled, has no train/test split, and is 93.65 MB (98,202,740 bytes). This is above 50 MB. GitHub warns at 50 MB and blocks at 100 MB. Git LFS may be needed. The file was not shrunk.
 
 ## Step-by-step log
 
@@ -333,7 +333,7 @@ Column count after this step: 122.
 
 Columns were ordered as surviving original columns, derived date columns, transforms, grouped text, one-hot columns, then `late` and `loss`. The file was written with `index=False` and `encoding="utf-8"`, then read back. Shape, dtype class, and values matched the in-memory frame (`assert_frame_equal`, float tolerance rtol 1e-7 and atol 1e-9). Integer columns were still integers. `Sales`, `Benefit per order`, and `Order Item Quantity` matched the pre-save values exactly on that re-read.
 
-Final file size is 93.65 MB (98,202,486 bytes). This is above the 50 MB GitHub warning threshold and was not shrunk or truncated. GitHub blocks files at 100 MB. Git LFS may be needed.
+Final file size is 93.65 MB (98,202,740 bytes). This is above the 50 MB GitHub warning threshold and was not shrunk or truncated. GitHub blocks files at 100 MB. Git LFS may be needed.
 
 Duplicate rows in the cleaned file: 0. Duplicate rows in the raw file: 0. The cleaned row count equals the raw row count. Any increase in duplicate rows is the result of removing identifier columns, not of deleting or copying records.
 

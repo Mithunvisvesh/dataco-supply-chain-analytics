@@ -1,6 +1,6 @@
 # Phase 2a: EDA findings
 
-- Run date: 2026-10-03
+- Run date: 2026-10-17
 - Script: `A_preprocessing_eda/phase2a_eda.py`
 - Input: `A_preprocessing_eda/outputs/cleaned_supply_chain.csv`
 - Rows used: 180,519
