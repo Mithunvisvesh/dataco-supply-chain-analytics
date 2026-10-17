@@ -497,7 +497,7 @@ def write_report(df: pd.DataFrame, results: list[dict], cleaned_path: Path) -> P
     lines = [
         "# Phase 2b report — Hypothesis tests (Person B)",
         "",
-        "**Course:** Foundations of Data Science (23CSE351) · Group 3  ",
+        "**Course:** Foundations of Data Science (23CSE351) · Group 4  ",
         "**Owner:** B (Mithun)  ",
         f"**Run date:** {date.today().isoformat()}  ",
         f"**Input:** `{rel(cleaned_path)}`  ",
@@ -637,8 +637,8 @@ def write_handoff(results: list[dict], cleaned_path: Path) -> Path:
         "1. Done: Loaded A's cleaned file without editing it. Ran the six source-of-truth tests "
         "(T1–T3 chi-squared, T4 ANOVA plus Kruskal–Wallis because profit is heavily skewed, "
         "T5–T6 Welch t-tests). Alpha = 0.05. Assumptions, effect sizes, plots, and a results CSV "
-        "are in the repo. Power BI pages 1–3 are not in this hand-off; KPIs and the dashboard spec "
-        "are ready for that next step.\n"
+        "are in the repo. Power BI dashboard "
+        "(`B_hypothesis_powerbi/dataco_supply_chain_dashboard.pbix`) is built and committed.\n"
         "2. Key numbers: "
         + "; ".join(key_bits)
         +         f". Only T1 and T4 reject H0 at alpha=0.05. T1 is the only practical effect "
@@ -658,7 +658,8 @@ def write_handoff(results: list[dict], cleaned_path: Path) -> Path:
         "5. Before you start: Quote effect sizes, not p-values. Shipping mode is the only strong "
         "association; do not claim that market, segment, or discount 'drive' late delivery or loss. "
         "C and D still create their own 80/20 split (`random_state = 42`) and scale after the split. "
-        "B still owes Power BI pages 1–3 on the cleaned file, then page 4 after C and D push."
+        "Power BI dashboard file: `B_hypothesis_powerbi/dataco_supply_chain_dashboard.pbix` "
+        "(all four pages). Quote effect sizes on slides."
     )
     path = OUTPUT_DIR / "handoff_phase2b.md"
     path.write_text(text + "\n", encoding="utf-8")

@@ -45,7 +45,7 @@
 |----------------|--------|
 | Row count preserved (180,519) | ✅ PASS |
 | Zero nulls in cleaned file | ✅ PASS |
-| All 27 leakage / PII columns dropped | ✅ PASS |
+| All 25 empty / personal / ID / leakage / exact-duplicate columns dropped | ✅ PASS |
 | Required columns present | ✅ PASS |
 | `late` and `loss` binary flags correct | ✅ PASS |
 | `loss` equals `Benefit per order < 0` on every row | ✅ PASS |
@@ -76,7 +76,7 @@
 
 | File | Status |
 |------|--------|
-| `A_preprocessing_eda/outputs/eda_findings.md` (8 findings) | ✅ |
+| `A_preprocessing_eda/outputs/eda_findings.md` (9 findings) | ✅ |
 | `A_preprocessing_eda/outputs/handoff_phase2a.md` | ✅ |
 | `A_preprocessing_eda/outputs/eda_summary_stats.csv` | ✅ |
 | `A_preprocessing_eda/outputs/eda_plots/` — 30 plots | ✅ |

@@ -112,7 +112,7 @@ Short hand-off: [`A_preprocessing_eda/outputs/handoff_phase1.md`](A_preprocessin
 
 | Item | Path |
 | --- | --- |
-| Findings (8 plain-language points + tests for B) | [`A_preprocessing_eda/outputs/eda_findings.md`](A_preprocessing_eda/outputs/eda_findings.md) |
+| Findings (9 plain-language points + tests for B) | [`A_preprocessing_eda/outputs/eda_findings.md`](A_preprocessing_eda/outputs/eda_findings.md) |
 | Plots | [`A_preprocessing_eda/outputs/eda_plots/`](A_preprocessing_eda/outputs/eda_plots/) |
 | Summary stats CSV | [`A_preprocessing_eda/outputs/eda_summary_stats.csv`](A_preprocessing_eda/outputs/eda_summary_stats.csv) |
 | Hand-off | [`A_preprocessing_eda/outputs/handoff_phase2a.md`](A_preprocessing_eda/outputs/handoff_phase2a.md) |

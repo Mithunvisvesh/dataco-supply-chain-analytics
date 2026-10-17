@@ -3,9 +3,9 @@
 - Run date: 2026-10-17
 - Script: `A_preprocessing_eda/phase1_cleaning.py`
 - Raw file: `dataset/DataCoSupplyChainDataset.csv`
-- Python: 3.13.2
+- Python: 3.13.9
 - pandas: 2.3.3
-- numpy: 2.3.3
+- numpy: 2.3.5
 
 ## Summary
 
@@ -15,7 +15,7 @@ Columns added: 4 derived date, 2 transform, 3 grouped text, 83 one-hot, 2 target
 Null cells fell from 336,209 to 0.
 Late orders (`late` = 1): 54.8291% (98,977 of 180,519). Loss orders (`loss` = 1): 18.7149% (33,784 of 180,519).
 Exactly zero profit: 0.6520% (1,177 rows). All of them have `loss` = 0.
-The cleaned file is unscaled, has no train/test split, and is 93.65 MB (98,202,740 bytes). This is above 50 MB. GitHub warns at 50 MB and blocks at 100 MB. Git LFS may be needed. The file was not shrunk.
+The cleaned file is unscaled, has no train/test split, and is 93.65 MB (98,202,486 bytes). This is above 50 MB. GitHub warns at 50 MB and blocks at 100 MB. Git LFS may be needed. The file was not shrunk.
 
 ## Step-by-step log
 
@@ -333,7 +333,7 @@ Column count after this step: 122.
 
 Columns were ordered as surviving original columns, derived date columns, transforms, grouped text, one-hot columns, then `late` and `loss`. The file was written with `index=False` and `encoding="utf-8"`, then read back. Shape, dtype class, and values matched the in-memory frame (`assert_frame_equal`, float tolerance rtol 1e-7 and atol 1e-9). Integer columns were still integers. `Sales`, `Benefit per order`, and `Order Item Quantity` matched the pre-save values exactly on that re-read.
 
-Final file size is 93.65 MB (98,202,740 bytes). This is above the 50 MB GitHub warning threshold and was not shrunk or truncated. GitHub blocks files at 100 MB. Git LFS may be needed.
+Final file size is 93.65 MB (98,202,486 bytes). This is above the 50 MB GitHub warning threshold and was not shrunk or truncated. GitHub blocks files at 100 MB. Git LFS may be needed.
 
 Duplicate rows in the cleaned file: 0. Duplicate rows in the raw file: 0. The cleaned row count equals the raw row count. Any increase in duplicate rows is the result of removing identifier columns, not of deleting or copying records.
 
@@ -708,7 +708,8 @@ SUMMARY: 56 passed, 0 failed
 
 ## Discrepancies
 
-- The project brief expected order dates from 1 Jan 2015 to 9 Sep 2017. The minimum is 2015-01-01 00:00:00. The maximum is 2018-01-31 23:38:00, which is after 9 Sep 2017. No rows were removed to force the expected window.
+- The project brief expected order dates from 1 Jan 2015 to 9 Sep 2017. The minimum is 2015-01-01 00:00:00. The maximum is 2018-01-31 23:38:00, which is after 9 Sep 2017. No rows were removed to force the expected window. Final range for slides and the Source of Truth: **1 Jan 2015 to 31 Jan 2018**. The 9 Sep 2017 figure came from the group Source of Truth / Phase 1 brief as an expected fact; it does not match a datetime parse of this raw CSV. September 2017 is instead the last full month with ~3 lines per order before the grain change.
+- From early October 2017 the extract changes grain: order lines per month fall from about 5,300 to about 2,100, while distinct `Order Id` counts stay roughly flat and lines per order go from ~3 to exactly 1 (switch around 2–3 Oct 2017). Raw monthly line counts will match the cleaned file, so cleaning does not cause the drop. 2017-07: lines=5,318, distinct orders=1,776, lines/order=2.994; 2017-08: lines=5,305, distinct orders=1,768, lines/order=3.001; 2017-09: lines=5,189, distinct orders=1,723, lines/order=3.012; 2017-10: lines=2,255, distinct orders=2,101, lines/order=1.073; 2017-11: lines=2,055, distinct orders=2,055, lines/order=1.000; 2017-12: lines=2,124, distinct orders=2,124, lines/order=1.000; 2018-01: lines=2,123, distinct orders=2,123, lines/order=1.000. Day-level switch: 2017-10-01: lines=165, orders=57, lpo=2.895; 2017-10-02: lines=104, orders=58, lpo=1.793. Treat this as a source-extract limitation for Power BI / viva.
 
 ## Assumptions and open decisions
 
@@ -730,4 +731,4 @@ SUMMARY: 56 passed, 0 failed
 
 ## Limitations
 
-The data come from a single company (DataCo). Orders in this file run from 2015-01-01 00:00:00 to 2018-01-31 23:38:00. Loss is defined only as `Benefit per order` < 0, so an order with profit of exactly zero is not a loss. Columns that leak the late-delivery outcome, and columns that define profit other than the target itself, were removed. `Benefit per order` remains because it is the OLS target. The cleaned file is not scaled and is not split into train and test.
+The data come from a single company (DataCo). Orders in this file run from 2015-01-01 00:00:00 to 2018-01-31 23:38:00. Loss is defined only as `Benefit per order` < 0, so an order with profit of exactly zero is not a loss. Columns that leak the late-delivery outcome, and columns that define profit other than the target itself, were removed. `Benefit per order` remains because it is the OLS target. The cleaned file is not scaled and is not split into train and test. From October 2017 the file is largely one line per order (earlier months average about three lines per order), so monthly order-line charts fall even though distinct order counts remain stable.

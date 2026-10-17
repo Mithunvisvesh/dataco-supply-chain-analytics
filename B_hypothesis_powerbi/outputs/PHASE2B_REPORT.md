@@ -1,6 +1,6 @@
 # Phase 2b report — Hypothesis tests (Person B)
 
-**Course:** Foundations of Data Science (23CSE351) · Group 3  
+**Course:** Foundations of Data Science (23CSE351) · Group 4  
 **Owner:** B (Mithun)  
 **Run date:** 2026-10-17  
 **Input:** `A_preprocessing_eda/outputs/cleaned_supply_chain.csv`  

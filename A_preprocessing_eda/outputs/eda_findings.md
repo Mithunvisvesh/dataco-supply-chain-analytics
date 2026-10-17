@@ -63,7 +63,26 @@ Plot: `overlay_scheduled_days_late.png`
 Plot: `hist_compare_Sales.png`
 ### F8. Order volume and late rate move over the calendar.
 
-Busiest month in this extract: 2016-10 (5,398 orders). Highest monthly late rate: 2016-06 (56.85%). B can use month as a slicer in Power BI; D may try `order_month` / `order_year` as features.
+Busiest month in this extract by row count: 2016-10 (5,398 order lines). Highest monthly late rate: 2016-06 (56.85%). B can use month as a slicer in Power BI; D may try `order_month` / `order_year` as features.
+
+Plot: `time_orders_and_late_rate.png`
+### F9. Order-line volume falls from October 2017 because the extract grain changes, not because cleaning removed rows.
+
+The monthly bar in `time_orders_and_late_rate.png` (and Power BI Overview) drops from about 5,300 lines/month through Sep 2017 to about 2,100 from Oct 2017. Raw and cleaned monthly line counts match in every month, so Phase 1 did not cause this.
+
+Checked on the raw file (`order date` parsed as `%m/%d/%Y %H:%M`):
+
+| Month | Order lines | Distinct `Order Id` | Lines per order |
+| --- | ---: | ---: | ---: |
+| 2017-07 | 5,318 | 1,776 | 2.994 |
+| 2017-08 | 5,305 | 1,768 | 3.001 |
+| 2017-09 | 5,189 | 1,723 | 3.012 |
+| 2017-10 | 2,255 | 2,101 | 1.073 |
+| 2017-11 | 2,055 | 2,055 | 1.000 |
+| 2017-12 | 2,124 | 2,124 | 1.000 |
+| 2018-01 | 2,123 | 2,123 | 1.000 |
+
+Day-level switch: through 2017-10-01 lines/order ≈ 3; on 2017-10-02 ≈ 1.8; from 2017-10-03 onward exactly 1. Distinct orders stay roughly flat. No reason for this grain change was found in the DataCo / Mendeley / Kaggle descriptions; treat it as a source-extract limitation. Prefer distinct orders (or say “order lines”) on slides after Sep 2017.
 
 Plot: `time_orders_and_late_rate.png`
 
@@ -133,3 +152,5 @@ These match the planned T1–T6 tests and are backed by the plots above.
 ## Limitations
 
 EDA is descriptive only. With ~180k rows, tiny differences can look “significant” in later tests; prefer effect sizes. Leakage columns stay excluded. No modelling was done in Phase 2a.
+
+Order dates in this extract run from **2015-01-01** to **2018-01-31** (not only through 2017). From early October 2017 the file is effectively one row per `Order Id`, whereas earlier months average about three lines per order, so monthly **line** charts fall even when distinct orders do not (see F9).

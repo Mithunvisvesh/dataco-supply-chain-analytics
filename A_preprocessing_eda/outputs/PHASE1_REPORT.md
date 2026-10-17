@@ -3,7 +3,7 @@
 **Course:** Foundations of Data Science (23CSE351) · Group 4<br>
 **Owner:** A  
 **Status:** Complete (validated)  
-**Run date:** 2026-10-03  
+**Run date:** 2026-10-17  
 **Input:** `dataset/DataCoSupplyChainDataset.csv`  
 **Output:** `A_preprocessing_eda/outputs/cleaned_supply_chain.csv`
 
@@ -102,7 +102,7 @@ Use the one-hot / grouped one-hot columns for models. Original category text is 
 
 | Person | Work | First step |
 | --- | --- | --- |
-| B | Hypothesis tests + Power BI | Load cleaned CSV; run T1–T6 from the source of truth; build dashboard pages 1–3 |
+| B | Hypothesis tests + Power BI | Load cleaned CSV; run T1–T6 from the source of truth; dashboard `.pbix` is in the repo |
 | C | OLS + loss classification | Exclude profit leakage and targets-as-features; check VIF on collinear sales columns; 80/20 stratified split |
 | D | Late-delivery model | Confirm leakage columns are absent; use scheduled days + shipping mode / market / region / segment etc.; expect modest accuracy |
 | A | Phase 2a EDA | Distributions, correlations, group plots, `eda_findings.md` |
@@ -123,7 +123,8 @@ Expect: validator summary `56 passed, 0 failed`. Running the cleaner twice produ
 
 ## 7. Discrepancies logged
 
-- Project brief expected order dates ending **9 Sep 2017**. Actual maximum is **2018-01-31 23:38:00**. No rows were removed to force the window.
+- Project brief expected order dates ending **9 Sep 2017**. Actual maximum is **2018-01-31 23:38:00**. Final range: **1 Jan 2015 to 31 Jan 2018**. No rows were removed to force the window. The 9 Sep 2017 figure came from the Source of Truth as an expected fact; it does not match this CSV when dates are parsed as datetime.
+- From early Oct 2017 the extract is mostly one line per order (earlier ~3 lines/order), so monthly **line** volume falls while distinct orders stay flat. Not caused by cleaning. See `eda_findings.md` F9.
 - Zero-profit share is **0.6520%** vs brief **0.7%** (within the 0.1 percentage-point tolerance → check marked PASS).
 
 ---

@@ -919,7 +919,7 @@ Output of `{VALIDATOR_REL}` (exit code {state['validation_code']}):
 
 ## Limitations
 
-The data come from a single company (DataCo). Orders in this file run from {state['date_min']} to {state['date_max']}. Loss is defined only as `Benefit per order` < 0, so an order with profit of exactly zero is not a loss. Columns that leak the late-delivery outcome, and columns that define profit other than the target itself, were removed. `Benefit per order` remains because it is the OLS target. The cleaned file is not scaled and is not split into train and test.
+The data come from a single company (DataCo). Orders in this file run from {state['date_min']} to {state['date_max']}. Loss is defined only as `Benefit per order` < 0, so an order with profit of exactly zero is not a loss. Columns that leak the late-delivery outcome, and columns that define profit other than the target itself, were removed. `Benefit per order` remains because it is the OLS target. The cleaned file is not scaled and is not split into train and test. From October 2017 the file is largely one line per order (earlier months average about three lines per order), so monthly order-line charts fall even though distinct order counts remain stable.
 """
 
 
@@ -1029,6 +1029,42 @@ def main() -> int:
     for left, right in IDENTITY_PAIRS:
         if left in df.columns and right in df.columns:
             pair_stats[(left, right)] = differing_rows(df[left], df[right])
+
+    # Grain probe while Order Id is still present (dropped in Step 2).
+    grain_note = ""
+    if "Order Id" in df.columns and ORDER_DATE_COL in df.columns:
+        probe_dt = pd.to_datetime(df[ORDER_DATE_COL], format=ORDER_DATE_FORMAT, errors="coerce")
+        probe = pd.DataFrame({"dt": probe_dt, "Order Id": df["Order Id"]})
+        probe = probe.dropna(subset=["dt"])
+        probe["ym"] = probe["dt"].dt.to_period("M")
+        grain_rows: list[str] = []
+        for period in ["2017-07", "2017-08", "2017-09", "2017-10", "2017-11", "2017-12", "2018-01"]:
+            p = pd.Period(period)
+            part = probe.loc[probe["ym"] == p]
+            if part.empty:
+                continue
+            n_lines = int(len(part))
+            n_orders = int(part["Order Id"].nunique())
+            lpo = n_lines / n_orders if n_orders else float("nan")
+            grain_rows.append(f"{period}: lines={fmt_int(n_lines)}, distinct orders={fmt_int(n_orders)}, lines/order={lpo:.3f}")
+        daily = probe.loc[(probe["dt"] >= "2017-10-01") & (probe["dt"] <= "2017-10-03")].copy()
+        daily["d"] = daily["dt"].dt.date
+        switch_bits: list[str] = []
+        for day, g in daily.groupby("d"):
+            switch_bits.append(
+                f"{day}: lines={fmt_int(len(g))}, orders={fmt_int(g['Order Id'].nunique())}, "
+                f"lpo={len(g) / g['Order Id'].nunique():.3f}"
+            )
+        grain_note = (
+            "From early October 2017 the extract changes grain: order lines per month fall from about 5,300 to "
+            "about 2,100, while distinct `Order Id` counts stay roughly flat and lines per order go from ~3 to "
+            "exactly 1 (switch around 2–3 Oct 2017). Raw monthly line counts will match the cleaned file, so "
+            "cleaning does not cause the drop. "
+            + "; ".join(grain_rows)
+            + ". Day-level switch: "
+            + "; ".join(switch_bits)
+            + ". Treat this as a source-extract limitation for Power BI / viva."
+        )
 
     discrepancies: list[str] = []
     checks: list[dict[str, str]] = []
@@ -1158,9 +1194,15 @@ def main() -> int:
             f"The project brief expected order dates from 1 Jan 2015 to 9 Sep 2017. "
             f"The minimum is {date_min.strftime('%Y-%m-%d %H:%M:%S')}. "
             f"The maximum is {date_max.strftime('%Y-%m-%d %H:%M:%S')}, which is after 9 Sep 2017. "
-            "No rows were removed to force the expected window."
+            "No rows were removed to force the expected window. "
+            "Final range for slides and the Source of Truth: **1 Jan 2015 to 31 Jan 2018**. "
+            "The 9 Sep 2017 figure came from the group Source of Truth / Phase 1 brief as an expected fact; "
+            "it does not match a datetime parse of this raw CSV. September 2017 is instead the last full month "
+            "with ~3 lines per order before the grain change."
         ),
     )
+    if grain_note:
+        discrepancies.append(grain_note)
     n_cols_after_dates = df.shape[1]
 
     pairs: list[dict[str, object]] = []

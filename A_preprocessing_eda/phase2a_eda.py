@@ -446,6 +446,51 @@ def _slug(name: str) -> str:
     )
 
 
+def _grain_change_body(raw_path: Path) -> str:
+    """Document the Oct 2017 order-line grain change using the raw file (has Order Id)."""
+    if not raw_path.is_file():
+        return (
+            "The monthly bar in `time_orders_and_late_rate.png` (and Power BI Overview) drops from about "
+            "5,300 lines/month through Sep 2017 to about 2,100 from Oct 2017. Raw and cleaned monthly line "
+            "counts match, so Phase 1 did not cause this. Distinct `Order Id` counts stay roughly flat while "
+            "lines per order go from ~3 to 1 around 2–3 Oct 2017. Prefer distinct orders (or say “order lines”) "
+            "on slides after Sep 2017."
+        )
+    raw = pd.read_csv(
+        raw_path,
+        encoding="latin-1",
+        usecols=["order date (DateOrders)", "Order Id"],
+        low_memory=False,
+    )
+    raw["dt"] = pd.to_datetime(raw["order date (DateOrders)"], format="%m/%d/%Y %H:%M", errors="coerce")
+    raw = raw.dropna(subset=["dt"])
+    raw["ym"] = raw["dt"].dt.to_period("M")
+    rows = []
+    for period in ["2017-07", "2017-08", "2017-09", "2017-10", "2017-11", "2017-12", "2018-01"]:
+        part = raw.loc[raw["ym"] == pd.Period(period)]
+        n_lines = int(len(part))
+        n_orders = int(part["Order Id"].nunique())
+        lpo = n_lines / n_orders if n_orders else float("nan")
+        rows.append(f"| {period} | {n_lines:,} | {n_orders:,} | {lpo:.3f} |")
+    table = "\n".join(
+        [
+            "| Month | Order lines | Distinct `Order Id` | Lines per order |",
+            "| --- | ---: | ---: | ---: |",
+            *rows,
+        ]
+    )
+    return (
+        "The monthly bar in `time_orders_and_late_rate.png` (and Power BI Overview) drops from about "
+        "5,300 lines/month through Sep 2017 to about 2,100 from Oct 2017. Raw and cleaned monthly line "
+        "counts match in every month, so Phase 1 did not cause this.\n\n"
+        f"Checked on the raw file (`order date` parsed as `%m/%d/%Y %H:%M`):\n\n{table}\n\n"
+        "Day-level switch: through 2017-10-01 lines/order ≈ 3; on 2017-10-02 ≈ 1.8; from 2017-10-03 onward "
+        "exactly 1. Distinct orders stay roughly flat. No reason for this grain change was found in the "
+        "DataCo / Mendeley / Kaggle descriptions; treat it as a source-extract limitation. Prefer distinct "
+        "orders (or say “order lines”) on slides after Sep 2017."
+    )
+
+
 def render_findings(
     df: pd.DataFrame,
     stats: pd.DataFrame,
@@ -454,6 +499,7 @@ def render_findings(
     overlay: dict[str, float],
     monthly: pd.DataFrame,
     plot_files: list[str],
+    grain_body: str,
 ) -> str:
     n = len(df)
     late_pct = float(df["late"].mean())
@@ -576,9 +622,14 @@ def render_findings(
         ),
         (
             "Order volume and late rate move over the calendar.",
-            f"Busiest month in this extract: {peak_month} ({peak_orders:,} orders). "
+            f"Busiest month in this extract by row count: {peak_month} ({peak_orders:,} order lines). "
             f"Highest monthly late rate: {late_month} ({fmt_pct(late_month_rate)}). "
             "B can use month as a slicer in Power BI; D may try `order_month` / `order_year` as features.",
+            "time_orders_and_late_rate.png",
+        ),
+        (
+            "Order-line volume falls from October 2017 because the extract grain changes, not because cleaning removed rows.",
+            grain_body,
             "time_orders_and_late_rate.png",
         ),
     ]
@@ -636,6 +687,8 @@ These match the planned T1–T6 tests and are backed by the plots above.
 ## Limitations
 
 EDA is descriptive only. With ~180k rows, tiny differences can look “significant” in later tests; prefer effect sizes. Leakage columns stay excluded. No modelling was done in Phase 2a.
+
+Order dates in this extract run from **2015-01-01** to **2018-01-31** (not only through 2017). From early October 2017 the file is effectively one row per `Order Id`, whereas earlier months average about three lines per order, so monthly **line** charts fall even when distinct orders do not (see F9).
 """
 
 
@@ -664,6 +717,7 @@ def render_handoff(
     plot_files: list[str],
 ) -> str:
     ship = late_rates["Shipping Mode"]
+    order_dates = pd.to_datetime(df["order date (DateOrders)"], errors="coerce")
     return "\n".join(
         [
             "HAND-OFF: Phase 2a, EDA (A)",
@@ -671,7 +725,8 @@ def render_handoff(
                 "1. Done: Ran EDA on the cleaned file — summary stats, distributions, categorical bars, "
                 "correlation heatmap, discount-vs-profit scatter, profit box/violin by shipping mode / market / segment, "
                 "late rates by shipping mode / market / region, overlays for late vs on-time and loss vs profit, "
-                "and monthly orders + late rate. Wrote eda_findings.md with 8 findings and a test list for B."
+                "and monthly orders + late rate. Wrote eda_findings.md with 9 findings "
+                "(including the Oct 2017 order-line grain change) and a test list for B."
             ),
             (
                 f"2. Key numbers: n={len(df):,}; late={fmt_pct(float(df['late'].mean()))}; "
@@ -683,13 +738,16 @@ def render_handoff(
                 f"{fmt_num(overlay['scheduled_mean_ontime'])}. "
                 f"Mean discount rate loss/profit: {fmt_num(overlay['discount_mean_loss'])} / "
                 f"{fmt_num(overlay['discount_mean_profit'])}. "
-                f"Plots written: {len(plot_files)}."
+                f"Plots written: {len(plot_files)}. "
+                f"Order dates: {order_dates.min().strftime('%Y-%m-%d')} to {order_dates.max().strftime('%Y-%m-%d')}. "
+                "From Oct 2017 lines/month fall ~5.3k→~2.1k while distinct orders stay flat (lines/order ~3→1)."
             ),
             (
                 "3. Decisions: Used scheduled days (not real shipping days). Sampled 8,000 rows for the scatter "
                 f"(random_state={RANDOM_STATE}) so the plot stays readable; rates and stats use all rows. "
                 "Recommended B’s tests: shipping mode vs late, market vs late, segment vs loss, profit across markets, "
-                "profit late vs on-time, discount loss vs profit."
+                "profit late vs on-time, discount loss vs profit. "
+                "Treat post-Sep 2017 monthly “volume” as order lines, not distinct orders."
             ),
             (
                 "4. Files: `A_preprocessing_eda/outputs/eda_plots/`; "
@@ -698,7 +756,8 @@ def render_handoff(
             ),
             (
                 "5. Before you start: B — start with the ‘Segments worth testing’ list in eda_findings.md and report "
-                "effect sizes. C — profit is skewed/heavy-tailed; discount relates to loss; watch Sales vs Order Item Total. "
+                "effect sizes; for Overview charts say order lines and cite F9 for the Oct 2017 drop. "
+                "C — profit is skewed/heavy-tailed; discount relates to loss; watch Sales vs Order Item Total. "
                 "D — shipping mode and scheduled days are the strongest late-delivery leads; do not reintroduce leakage columns."
             ),
         ]
@@ -749,7 +808,9 @@ def main() -> int:
     logger.info("Time view")
     monthly = plot_time_view(df, plot_files)
 
-    findings = render_findings(df, stats, corr, late_rates, overlay, monthly, plot_files)
+    raw_path = REPO_ROOT / "dataset" / "DataCoSupplyChainDataset.csv"
+    grain_body = _grain_change_body(raw_path)
+    findings = render_findings(df, stats, corr, late_rates, overlay, monthly, plot_files, grain_body)
     handoff = render_handoff(df, late_rates, overlay, plot_files)
     findings_path = OUTPUT_DIR / "eda_findings.md"
     handoff_path = OUTPUT_DIR / "handoff_phase2a.md"
