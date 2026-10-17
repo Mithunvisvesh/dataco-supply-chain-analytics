@@ -108,6 +108,7 @@ The cleaned file has 180,519 rows. The source of truth warned that almost every 
 
 - Rows are **order lines**, not unique orders or unique shipments. Tests treat them as independent.
 - n is large, but four of six tests still fail to reject H0. Quote effect sizes and group rates in the viva.
+- No multiple-testing correction was applied across the six tests (alpha = 0.05 each). A Bonferroni threshold would be 0.05 / 6 = 0.0083: T1 would still reject, but T4 (p = 0.009626) would not. Holm's procedure keeps T4 only narrowly (0.009626 < 0.01). Treat T4 as borderline and quote its effect size.
 - T4–T6 use `Benefit per order` and `Order Item Discount Rate` as they stand (unscaled, outliers kept).
 - Late and loss definitions follow the source of truth: `late` = `Late_delivery_risk`; `loss` = 1 if `Benefit per order` < 0.
 
