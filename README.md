@@ -82,7 +82,7 @@ README.md
 | Oscar | Phase 1 — cleaning and preprocessing | Done |
 | Oscar | Phase 2a — EDA | Done |
 | Mithun | Phase 2b — hypothesis tests | Done |
-| Mithun | Phase 4 — Power BI dashboard | Not included in this repository; dashboard pages remain outstanding |
+| Mithun | Phase 4 — Power BI dashboard | Done; all 4 pages built and committed (`dataco_supply_chain_dashboard.pbix`) |
 | Hisana | Phase 3a — OLS + loss classification | Done |
 | Preetham | Phase 3b — late-delivery model | Done; model outputs and hand-off are included |
 
