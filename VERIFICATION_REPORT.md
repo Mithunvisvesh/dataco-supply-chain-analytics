@@ -18,7 +18,7 @@
 | scikit-learn | 1.7.2 | 1.7.2 | ✅ |
 | imbalanced-learn | 0.14.0 | 0.14.0 | ✅ |
 
-> **Note:** `D_late_model_report/requirements.txt` pins `numpy==2.3.3` while the other phases pin `2.3.5`. The installed `2.3.3` satisfied all phases without issue.
+> **NumPy version note:** All four phase requirements files pin `numpy==2.3.5`. The local Python environment inspected during this audit uses NumPy 2.3.3. Available evidence does not conclusively establish which NumPy version was used to generate the committed Phase 2B and Phase 3B outputs. No claim of output incompatibility or numerical impact is made without further evidence.
 
 ---
 
@@ -157,7 +157,7 @@ All other tested associations are statistically non-significant or have negligib
 | LR baseline | 0.8128 | 0.000 | 0.000 | 0.000 | 0.503 |
 | LR class_weight=balanced | 0.5112 | 0.188 | 0.486 | 0.271 | 0.503 |
 | LR random oversampling | 0.5033 | 0.189 | 0.504 | 0.275 | 0.505 |
-| LR SMOTE | 0.4936 | 0.189 | 0.520 | 0.277 | **0.504** |
+| LR SMOTE | 0.4941 | 0.189 | 0.519 | 0.277 | **0.504** |
 
 ### Signal Check (Gradient-Boosting Ceiling Probe)
 
